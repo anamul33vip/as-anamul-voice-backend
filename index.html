@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AS ANAMUL VOICE — ফ্রি কী জেনারেটর</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#0f1115;color:#fff;font-family:Arial,sans-serif;text-align:center}
+  .wrap{max-width:520px;margin:0 auto;padding:24px 16px 40px}
+  .logo{width:96px;height:96px;border-radius:50%;border:3px solid #22c55e;box-shadow:0 0 24px rgba(34,197,94,.55)}
+  h1{font-size:26px;margin:14px 0 4px}
+  .sub{color:#9aa0a6;font-size:14px;margin:0 0 18px}
+  .card{background:#1a1d24;border:1px solid #2a2f3a;border-radius:16px;padding:22px 18px;margin:14px 0}
+  .step-tag{display:inline-block;background:#22c55e;color:#06281a;font-weight:bold;border-radius:20px;padding:4px 14px;font-size:13px}
+  .step-title{font-size:20px;margin:14px 0 6px}
+  .step-desc{color:#9aa0a6;font-size:14px;line-height:1.7;margin:0 0 14px}
+  .timer{font-size:56px;font-weight:bold;color:#22c55e;margin:8px 0}
+  .bar{height:8px;background:#2a2f3a;border-radius:8px;overflow:hidden;margin:10px 0 16px}
+  .bar > div{height:100%;background:#22c55e;width:100%}
+  button{display:block;width:100%;border:0;border-radius:12px;padding:15px;font-size:17px;font-weight:bold;color:#fff;cursor:pointer;margin:8px 0}
+  button:disabled{background:#3a3f4a!important;color:#9aa0a6;cursor:default}
+  .btn-green{background:#16a34a}
+  .btn-red{background:#ff0000}
+  .btn-blue{background:#229ed9}
+  .btn-grey{background:#3a3f4a}
+  .keybox{background:#0b0d10;border:1px dashed #22c55e;border-radius:12px;padding:16px;font-size:22px;font-weight:bold;letter-spacing:1px;word-break:break-all;margin:12px 0}
+  .ok{color:#22c55e}.bad{color:#ff6b6b}
+  .small{color:#6b7280;font-size:13px;line-height:1.7}
+  .row{display:flex;gap:8px}
+  .row button{flex:1}
+  .hidden{display:none!important}
+  .check{font-size:15px;margin:6px 0;text-align:left;padding-left:8px}
+  a{color:#22c55e}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="https://asanamul-king.netlify.app/logo.png" alt="AS ANAMUL" onerror="this.style.display='none'">
+  <h1>AS ANAMUL VOICE</h1>
+  <p class="sub">ফ্রি কী জেনারেটর — ৬ ধাপ শেষ করুন, কী পান</p>
+
+  <!-- ধাপ ১-৪: অপেক্ষা -->
+  <div class="card" id="step-wait">
+    <span class="step-tag" id="wait-tag">ধাপ ১ / ৬</span>
+    <div class="step-title" id="wait-title">সার্ভার চেক হচ্ছে…</div>
+    <p class="step-desc" id="wait-desc">অনুগ্রহ করে অপেক্ষা করুন। টাইমার শেষ হলে পরের ধাপের বাটন চালু হবে।</p>
+    <div class="timer" id="wait-timer">30</div>
+    <div class="bar"><div id="wait-bar"></div></div>
+    <div class="check" id="wait-info"></div>
+    <button class="btn-green" id="wait-next" disabled>পরের ধাপ →</button>
+  </div>
+
+  <!-- ধাপ ৫: YouTube -->
+  <div class="card hidden" id="step-yt">
+    <span class="step-tag">ধাপ ৫ / ৬</span>
+    <div class="step-title">YouTube চ্যানেল Subscribe করুন</div>
+    <p class="step-desc">কী পেতে আমাদের YouTube চ্যানেলটি Subscribe করতে হবে। নিচের বাটনে চাপ দিয়ে Subscribe করুন, তারপর ৭ সেকেন্ড অপেক্ষা করুন।</p>
+    <div class="timer" id="yt-timer">7</div>
+    <div class="bar"><div id="yt-bar"></div></div>
+    <button class="btn-red" id="yt-sub">▶ YouTube Subscribe করুন</button>
+    <button class="btn-green hidden" id="yt-done">✓ আমি Subscribe করেছি — পরের ধাপ →</button>
+  </div>
+
+  <!-- ধাপ ৬: Telegram -->
+  <div class="card hidden" id="step-tg">
+    <span class="step-tag">ধাপ ৬ / ৬</span>
+    <div class="step-title">Telegram চ্যানেলে Join করুন</div>
+    <p class="step-desc">শেষ ধাপ! আমাদের Telegram চ্যানেলে Join করুন, তারপর ৭ সেকেন্ড অপেক্ষা করুন।</p>
+    <div class="timer" id="tg-timer">7</div>
+    <div class="bar"><div id="tg-bar"></div></div>
+    <button class="btn-blue" id="tg-join">✈ Telegram Join করুন</button>
+    <button class="btn-green hidden" id="tg-done">✓ আমি Join করেছি — কী নিন →</button>
+  </div>
+
+  <!-- কী -->
+  <div class="card hidden" id="step-key">
+    <span class="step-tag">আপনার কী তৈরি!</span>
+    <div class="step-title" id="key-title">অভিনন্দন!</div>
+    <p class="step-desc" id="key-desc">এই কীটি ১২ ঘণ্টা চলবে। কপি করে AS ANAMUL VOICE অ্যাপে বসান।</p>
+    <div class="keybox" id="key-text">—</div>
+    <div class="row">
+      <button class="btn-green" id="key-copy">📋 কপি করুন</button>
+      <button class="btn-grey" id="key-again">আবার দেখুন</button>
+    </div>
+    <p class="small" id="key-exp"></p>
+    <p class="small">একটা ডিভাইসে একটাই কী চলে। কীটি অন্য ফোনে কাজ করবে না।</p>
+  </div>
+
+  <div class="card hidden" id="step-err">
+    <div class="step-title bad">কিছু একটা হয়নি</div>
+    <p class="step-desc" id="err-msg">আবার চেষ্টা করুন।</p>
+    <button class="btn-green" id="err-retry">আবার চেষ্টা করুন</button>
+  </div>
+
+  <p class="small">AS ANAMUL VOICE • Telegram: <a href="https://t.me/crackffpanel">t.me/crackffpanel</a> • YouTube: <a href="https://www.youtube.com/@Anamul_Islamic_Echo">@Anamul_Islamic_Echo</a></p>
+</div>
+
+<script>
+var API_BASE = 'https://as-anamul-voice-backend.onrender.com';
+var YT_URL = 'https://www.youtube.com/@Anamul_Islamic_Echo?sub_confirmation=1';
+var TG_URL = 'https://t.me/crackffpanel';
+
+var STEPS = [
+  { secs: 30, title: 'সার্ভার চেক হচ্ছে…', desc: 'আমাদের সার্ভারের সঙ্গে সংযোগ পরীক্ষা করা হচ্ছে।' },
+  { secs: 15, title: 'ডিভাইস যাচাই হচ্ছে…', desc: 'আপনার ডিভাইসের তথ্য যাচাই করা হচ্ছে।' },
+  { secs: 30, title: 'কী তৈরি হচ্ছে…', desc: 'আপনার জন্য নতুন কী তৈরি করা হচ্ছে।' },
+  { secs: 15, title: 'শেষ পরীক্ষা চলছে…', desc: 'সবকিছু ঠিক আছে কিনা শেষবারের মতো দেখা হচ্ছে।' }
+];
+var stepIndex = 0;
+var timerId = null;
+
+function $(id) { return document.getElementById(id); }
+function show(id) { $(id).classList.remove('hidden'); }
+function hide(id) { $(id).classList.add('hidden'); }
+function deviceId() {
+  var id = null;
+  try { id = localStorage.getItem('voicekey_device'); } catch (e) {}
+  if (!id) {
+    id = 'web-' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+    try { localStorage.setItem('voicekey_device', id); } catch (e) {}
+  }
+  return id;
+}
+function shortId(id) { return id.length > 14 ? id.slice(0, 14) + '…' : id; }
+
+function startWaitStep() {
+  var step = STEPS[stepIndex];
+  var total = step.secs;
+  var left = total;
+  $('wait-tag').textContent = 'ধাপ ' + (stepIndex + 1) + ' / ৬';
+  $('wait-title').textContent = step.title;
+  $('wait-desc').textContent = step.desc;
+  $('wait-next').disabled = true;
+  $('wait-next').textContent = 'পরের ধাপ →';
+  var info = '';
+  if (stepIndex === 0) {
+    info = '<div class="check" id="api-check">API: পরীক্ষা চলছে…</div>';
+  } else if (stepIndex === 1) {
+    info = '<div class="check">ডিভাইস: ' + shortId(deviceId()) + '</div>';
+  } else {
+    info = '<div class="check">ডিভাইস: ' + shortId(deviceId()) + '</div>';
+  }
+  $('wait-info').innerHTML = info;
+  if (stepIndex === 0) { checkApi(); }
+  $('wait-timer').textContent = left;
+  $('wait-bar').style.width = '100%';
+  if (timerId) { clearInterval(timerId); }
+  timerId = setInterval(function () {
+    left--;
+    if (left <= 0) {
+      clearInterval(timerId);
+      $('wait-timer').textContent = '0';
+      $('wait-bar').style.width = '0%';
+      $('wait-next').disabled = false;
+      $('wait-next').textContent = 'পরের ধাপ →';
+      return;
+    }
+    $('wait-timer').textContent = left;
+    $('wait-bar').style.width = Math.round((left / total) * 100) + '%';
+  }, 1000);
+}
+
+function checkApi() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', API_BASE + '/healthz', true);
+  xhr.timeout = 30000;
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState !== 4) { return; }
+    var el = $('api-check');
+    if (!el) { return; }
+    if (xhr.status >= 200 && xhr.status < 300) {
+      el.innerHTML = 'API: <span class="ok">✅ অনলাইন</span>';
+    } else {
+      el.innerHTML = 'API: <span class="bad">❌ অফলাইন (আবার চেষ্টা করুন)</span>';
+    }
+  };
+  xhr.ontimeout = function () {
+    var el = $('api-check');
+    if (el) { el.innerHTML = 'API: <span class="bad">❌ সাড়া দিচ্ছে না</span>'; }
+  };
+  xhr.onerror = function () {
+    var el = $('api-check');
+    if (el) { el.innerHTML = 'API: <span class="bad">❌ সংযোগ হয়নি</span>'; }
+  };
+  try { xhr.send(); } catch (e) {}
+}
+
+function startSeven(idTimer, idBar, idDone) {
+  var left = 7;
+  var total = 7;
+  $(idTimer).textContent = left;
+  $(idBar).style.width = '100%';
+  $(idDone).classList.add('hidden');
+  if (timerId) { clearInterval(timerId); }
+  timerId = setInterval(function () {
+    left--;
+    if (left <= 0) {
+      clearInterval(timerId);
+      $(idTimer).textContent = '0';
+      $(idBar).style.width = '0%';
+      $(idDone).classList.remove('hidden');
+      return;
+    }
+    $(idTimer).textContent = left;
+    $(idBar).style.width = Math.round((left / total) * 100) + '%';
+  }, 1000);
+}
+
+function mintKey() {
+  hide('step-tg');
+  show('step-wait');
+  $('wait-tag').textContent = 'কী বানানো হচ্ছে…';
+  $('wait-title').textContent = 'সার্ভার জাগছে…';
+  $('wait-desc').textContent = 'প্রথমবার একটু সময় লাগতে পারে (সার্ভার ঘুমিয়ে থাকলে ৫০ সেকেন্ড পর্যন্ত)।';
+  $('wait-info').innerHTML = '';
+  $('wait-next').disabled = true;
+  $('wait-next').textContent = 'অপেক্ষা করুন…';
+  var dots = 0;
+  if (timerId) { clearInterval(timerId); }
+  timerId = setInterval(function () {
+    dots = (dots + 1) % 4;
+    var s = '';
+    for (var i = 0; i < dots; i++) { s += '.'; }
+    $('wait-timer').textContent = s || '…';
+  }, 500);
+  postMint(0);
+}
+
+function postMint(attempt) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', API_BASE + '/api/web/mint', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.timeout = 90000;
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState !== 4) { return; }
+    if (timerId) { clearInterval(timerId); }
+    if (xhr.status >= 200 && xhr.status < 300) {
+      var data = null;
+      try { data = JSON.parse(xhr.responseText); } catch (e) {}
+      if (data && data.ok && data.key) {
+        showKey(data.key, data.expiresAt, data.reused);
+      } else {
+        showErr('সার্ভার থেকে কী পাওয়া যায়নি। আবার চেষ্টা করুন।');
+      }
+    } else if (xhr.status === 429) {
+      showErr('অনেকবার চেষ্টা হয়েছে — একটু পরে আবার চেষ্টা করুন।');
+    } else {
+      if (attempt < 1) { postMint(attempt + 1); return; }
+      showErr('সার্ভারের সঙ্গে সংযোগ হয়নি (স্ট্যাটাস ' + xhr.status + ')। আবার চেষ্টা করুন।');
+    }
+  };
+  xhr.ontimeout = function () {
+    if (attempt < 1) { postMint(attempt + 1); return; }
+    if (timerId) { clearInterval(timerId); }
+    showErr('সার্ভার জাগতে দেরি হচ্ছে — আবার চেষ্টা করুন।');
+  };
+  xhr.onerror = function () {
+    if (attempt < 1) { postMint(attempt + 1); return; }
+    if (timerId) { clearInterval(timerId); }
+    showErr('ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।');
+  };
+  try { xhr.send(JSON.stringify({ deviceId: deviceId() })); } catch (e) {
+    if (timerId) { clearInterval(timerId); }
+    showErr('পাঠাতে সমস্যা হয়েছে — আবার চেষ্টা করুন।');
+  }
+}
+
+function showKey(key, expiresAt, reused) {
+  hide('step-wait');
+  hide('step-err');
+  $('key-title').textContent = reused ? 'আপনার কী আগেই বানানো আছে' : 'অভিনন্দন!';
+  $('key-text').textContent = key;
+  if (expiresAt) {
+    var d = new Date(expiresAt);
+    $('key-exp').textContent = 'মেয়াদ শেষ: ' + d.toLocaleString('bn-BD');
+  } else {
+    $('key-exp').textContent = '';
+  }
+  show('step-key');
+}
+
+function showErr(msg) {
+  hide('step-wait');
+  hide('step-key');
+  $('err-msg').textContent = msg;
+  show('step-err');
+}
+
+function copyText(text, done) {
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    done(ok);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallback(); });
+  } else {
+    fallback();
+  }
+}
+
+$('wait-next').onclick = function () {
+  stepIndex++;
+  if (stepIndex < 4) {
+    startWaitStep();
+  } else if (stepIndex === 4) {
+    hide('step-wait');
+    show('step-yt');
+    startSeven('yt-timer', 'yt-bar', 'yt-done');
+  }
+};
+$('yt-sub').onclick = function () { window.open(YT_URL, '_blank'); };
+$('yt-done').onclick = function () {
+  hide('step-yt');
+  show('step-tg');
+  startSeven('tg-timer', 'tg-bar', 'tg-done');
+};
+$('tg-join').onclick = function () { window.open(TG_URL, '_blank'); };
+$('tg-done').onclick = function () { mintKey(); };
+$('key-copy').onclick = function () {
+  var key = $('key-text').textContent;
+  var btn = $('key-copy');
+  copyText(key, function (ok) {
+    btn.textContent = ok ? '✓ কপি হয়েছে!' : 'কপি হয়নি — কীটি চেপে ধরে কপি করুন';
+    setTimeout(function () { btn.textContent = '📋 কপি করুন'; }, 2500);
+  });
+};
+$('key-again').onclick = function () { mintKey(); };
+$('err-retry').onclick = function () {
+  hide('step-err');
+  show('step-wait');
+  startWaitStep();
+};
+
+startWaitStep();
+</script>
+</body>
+</html>
