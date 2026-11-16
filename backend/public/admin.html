@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="bn"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f1115">
+<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/favicon.png"><link rel="apple-touch-icon" href="/logo-192.png">
+<title>AS ANAMUL VOICE — Admin</title>
+<style>
+:root{--bg:#0b0d12;--card:#151922;--tx:#e8eaf0;--mut:#8b93a7;--ac:#7c5cff;--bad:#ff6b6b;--ok:#4cd6a0;--warn:#ffc857}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--tx);padding:12px;max-width:1000px;margin:auto}
+header{display:flex;align-items:center;gap:12px;margin-bottom:10px}header img{width:52px;height:52px;border-radius:50%}
+header h1{font-size:18px;margin:0;flex:1}header a{color:#4fc3f7;text-decoration:none;font-size:13px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}.tabs button{background:#1d2230;white-space:nowrap}.tabs button.on{background:var(--ac)}
+.card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:12px}
+input,button,select,textarea{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid #2a2f3a;background:#0b0d12;color:var(--tx)}
+button{background:var(--ac);border:0;color:#fff;cursor:pointer}button.s{background:#2a2f3a}button.d{background:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;align-items:center}table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:6px;border-bottom:1px solid #232938;text-align:left;vertical-align:top}.wrap{overflow-x:auto}
+.b{padding:2px 8px;border-radius:99px;font-size:12px;white-space:nowrap}.ok{background:#12372b;color:var(--ok)}.bad{background:#3a1b1b;color:var(--bad)}.wn{background:#3b3114;color:var(--warn)}.m{color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.stat{background:var(--card);border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:26px;margin-top:4px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#555;margin-right:6px}.dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+pre{white-space:pre-wrap;margin:6px 0}.hide{display:none}
+</style></head><body>
+<header><img src="/logo-192.png"><h1>AS ANAMUL VOICE<br><span class="m" style="font-size:12px">Admin Panel</span></h1><a id="tg" href="https://t.me/crackffpanel" target="_blank">Telegram</a></header>
+
+<div class="card" id="login"><div class="row"><input id="pw" type="password" placeholder="অ্যাডমিন পাসওয়ার্ড" style="flex:1"><button onclick="login()">লগইন</button></div></div>
+
+<div id="app" class="hide">
+<div class="tabs" id="tabs"></div>
+
+<section id="t-dash">
+ <div class="grid">
+  <div class="stat"><span class="m">🟢 এখন অনলাইন</span><b id="s-online">0</b></div>
+  <div class="stat"><span class="m">আজ ঢুকেছে (ইউনিক)</span><b id="s-today">0</b></div>
+  <div class="stat"><span class="m">আজ লগইন</span><b id="s-logins">0</b></div>
+  <div class="stat"><span class="m">সক্রিয় Key</span><b id="s-active">0</b></div>
+  <div class="stat"><span class="m">মোট Key</span><b id="s-total">0</b></div>
+ </div>
+ <h3>📅 দিনভিত্তিক হিসাব (শেষ ৩০ দিন)</h3>
+ <div class="card wrap"><table><thead><tr><th>তারিখ</th><th>কতজন ঢুকেছে</th><th>লগইন</th><th>ব্যর্থ</th><th>ভয়েস জেনারেট</th><th>অ্যাডমিন ভিজিট</th></tr></thead><tbody id="days"></tbody></table></div>
+ <h3>🕒 সাম্প্রতিক কার্যক্রম</h3>
+ <div class="card wrap"><table><tbody id="log"></tbody></table></div>
+</section>
+
+<section id="t-keys" class="hide">
+ <div class="card"><b>🔑 নতুন Access Key</b><div class="row">
+  <input id="kl" placeholder="লেবেল / ক্রেতার নাম"><input id="kd" type="number" value="30" style="width:80px"> দিন
+  <input id="kc" type="number" value="1" style="width:70px"> টি <button onclick="mkKeys()">তৈরি</button></div>
+  <pre id="made" class="m"></pre></div>
+ <div class="row"><input id="q" placeholder="🔎 খুঁজুন (key / নাম / মডেল)" oninput="renderKeys()" style="flex:1">
+  <select id="f" onchange="renderKeys()"><option value="">সব</option><option value="on">অনলাইন</option><option value="act">সক্রিয়</option><option value="exp">মেয়াদ শেষ</option><option value="ban">Banned</option></select></div>
+ <div class="card wrap"><table><thead><tr><th>Key</th><th>অবস্থা</th><th>মেয়াদ</th><th>ডিভাইস</th><th>শেষ দেখা</th><th></th></tr></thead><tbody id="keys"></tbody></table></div>
+</section>
+
+<section id="t-codes" class="hide">
+ <div class="card"><b>🎟️ Redeem Code (মেয়াদ বাড়ানোর কোড)</b><div class="row"><input id="cd" type="number" value="7" style="width:80px"> দিন
+  <input id="cc" type="number" value="1" style="width:70px"> টি <button onclick="mkCodes()">তৈরি</button></div><pre id="codesmade" class="m"></pre></div>
+ <div class="card wrap"><table><thead><tr><th>Code</th><th>দিন</th><th>অবস্থা</th><th></th></tr></thead><tbody id="codes"></tbody></table></div>
+</section>
+
+<section id="t-set" class="hide">
+ <div class="card">
+  <b>⚙️ অ্যাপ নিয়ন্ত্রণ</b>
+  <div class="row"><label>অ্যাপের নাম</label><input id="an" style="flex:1"></div>
+  <div class="row"><label>Telegram লিংক</label><input id="tu" style="flex:1"></div>
+  <div class="row"><label>ঘোষণা</label><input id="ann" placeholder="অ্যাপে সবাইকে দেখাবে" style="flex:1"></div>
+  <div class="row"><label>Minimum অ্যাপ ভার্সন (versionCode)</label><input id="mv" type="number" style="width:90px"> <span class="m">এর চেয়ে পুরোনো অ্যাপ বন্ধ হবে</span></div>
+  <div class="row"><label><input type="checkbox" id="mt"> 🛑 মেইনটেন্যান্স মোড (সবার জন্য অ্যাপ বন্ধ)</label></div>
+  <div class="row"><input id="mm" placeholder="মেইনটেন্যান্স বার্তা" style="flex:1"></div>
+  <b>🎙️ ভয়েস লিস্ট</b> <span class="m">প্রতি লাইনে: নাম | VoiceID (Kore, Puck, Charon, Fenrir, Aoede, Zephyr…)</span>
+  <textarea id="voices" rows="6" style="width:100%"></textarea>
+  <div class="row"><button onclick="saveCfg()">💾 সেভ</button></div>
+ </div>
+</section>
+</div>
+
+<script>
+let auth='',S=null,tab='dash';const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const api=(p,m='GET',b)=>fetch('/admin/api'+p,{method:m,headers:{'Authorization':auth,'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined}).then(r=>{if(r.status==401){alert('ভুল পাসওয়ার্ড');throw 0}return r.json()});
+const tabs=[['dash','📊 ড্যাশবোর্ড'],['keys','🔑 Keys'],['codes','🎟️ Codes'],['set','⚙️ সেটিংস']];
+$('tabs').innerHTML=tabs.map(t=>`<button id="b-${t[0]}" onclick="go('${t[0]}')">${t[1]}</button>`).join('');
+function go(t){tab=t;tabs.forEach(x=>{$('t-'+x[0]).classList.toggle('hide',x[0]!=t);$('b-'+x[0]).classList.toggle('on',x[0]==t)})}
+async function login(){auth='Basic '+btoa('admin:'+$('pw').value);await load(true);await api('/visit','POST');$('login').classList.add('hide');$('app').classList.remove('hide');go('dash');setInterval(()=>load(),15000)}
+const d=t=>t?new Date(t).toLocaleString('bn-BD'):'—';
+function ago(t){if(!t)return'কখনো না';const s=(Date.now()-t)/1000;if(s<120)return'এইমাত্র';if(s<3600)return Math.floor(s/60)+' মিনিট আগে';if(s<86400)return Math.floor(s/3600)+' ঘণ্টা আগে';return Math.floor(s/86400)+' দিন আগে'}
+async function load(first){S=await api('/state');const m=S.summary;
+ $('s-online').textContent=m.online;$('s-today').textContent=m.todayUsers;$('s-logins').textContent=m.todayLogins;$('s-active').textContent=m.active;$('s-total').textContent=m.total;
+ $('days').innerHTML=S.days.slice().reverse().map(x=>`<tr><td>${x.date}</td><td><b>${x.users}</b></td><td>${x.logins}</td><td>${x.failed}</td><td>${x.tts}</td><td>${x.panel}</td></tr>`).join('')||'<tr><td class="m">এখনো কিছু নেই</td></tr>';
+ $('log').innerHTML=S.log.map(l=>`<tr><td class="m">${ago(l.t)}</td><td>${esc(l.type)}</td><td>${esc(l.key)}</td><td class="m">${esc(l.extra)}</td></tr>`).join('');
+ renderKeys();
+ $('codes').innerHTML=S.codes.slice().reverse().map(c=>`<tr><td>${esc(c.code)}</td><td>${c.days}</td><td>${c.used?'<span class="b bad">ব্যবহৃত ('+esc(c.usedBy)+')</span>':'<span class="b ok">নতুন</span>'}</td><td><button class="d" onclick="delCode('${esc(c.code)}')">✕</button></td></tr>`).join('');
+ $('tg').href=S.config.telegramUrl;
+ if(first||!$('an').dataset.dirty){const c=S.config;if(first){$('an').value=c.appName;$('tu').value=c.telegramUrl;$('ann').value=c.announcement||'';$('mv').value=c.minVersion||1;$('mt').checked=!!c.maintenance;$('mm').value=c.maintenanceMsg||'';$('voices').value=c.voices.map(v=>v.name+' | '+v.voiceId).join('\n')}}}
+function renderKeys(){if(!S)return;const q=$('q').value.toLowerCase(),f=$('f').value,on=new Set(S.online);
+ $('keys').innerHTML=S.keys.slice().reverse().filter(k=>{const exp=k.expiresAt&&k.expiresAt<Date.now();
+  if(f=='on'&&!on.has(k.key))return false;if(f=='act'&&(k.banned||exp))return false;if(f=='exp'&&!exp)return false;if(f=='ban'&&!k.banned)return false;
+  return !q||(k.key+' '+(k.label||'')+' '+(k.model||'')).toLowerCase().includes(q)}).map(k=>{const exp=k.expiresAt&&k.expiresAt<Date.now();
+  const st=k.banned?'<span class="b bad">BANNED</span>':exp?'<span class="b bad">EXPIRED</span>':'<span class="b ok">OK</span>';
+  return `<tr><td><span class="dot ${on.has(k.key)?'on':''}"></span>${esc(k.key)}<br><span class="m">${esc(k.label)}</span></td><td>${st}</td>
+  <td>${k.expiresAt?d(k.expiresAt):esc(k.days)+' দিন (অব্যবহৃত)'}</td>
+  <td class="m">${k.deviceId?esc(k.model||'?')+'<br>Android '+esc(k.android||'?')+'<br>v'+esc(k.appVersion||'?'):'—'}</td>
+  <td class="m">${ago(k.lastSeen)}<br>লগইন: ${k.loginCount||0} · ভয়েস: ${k.ttsCount||0}</td><td>
+  <button class="s" onclick="act('${esc(k.key)}',{addDays:30})">+30d</button>
+  <button class="s" onclick="act('${esc(k.key)}',{resetDevice:true})">Reset Device</button>
+  <button class="s" onclick="act('${esc(k.key)}',{banned:${!k.banned}})">${k.banned?'Unban':'Ban'}</button>
+  <button class="d" onclick="del('${esc(k.key)}')">✕</button></td></tr>`}).join('')}
+async function mkKeys(){const r=await api('/keys','POST',{label:$('kl').value,days:+$('kd').value,count:+$('kc').value});$('made').textContent=r.map(k=>k.key).join('\n');load()}
+async function mkCodes(){const r=await api('/codes','POST',{days:+$('cd').value,count:+$('cc').value});$('codesmade').textContent=r.map(c=>c.code).join('\n');load()}
+async function act(k,b){await api('/keys/'+k,'PATCH',b);load()}
+async function del(k){if(confirm('Key মুছবেন?')){await api('/keys/'+k,'DELETE');load()}}
+async function delCode(c){await api('/codes/'+c,'DELETE');load()}
+async function saveCfg(){const voices=$('voices').value.split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(a=>a[0]&&a[1]).map(a=>({name:a[0],voiceId:a[1]}));
+ await api('/config','PUT',{appName:$('an').value,telegramUrl:$('tu').value,announcement:$('ann').value,minVersion:+$('mv').value,maintenance:$('mt').checked,maintenanceMsg:$('mm').value,voices});alert('সেভ হয়েছে');load(true)}
+</script></body></html>
