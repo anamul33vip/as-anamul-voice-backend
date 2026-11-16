@@ -267,6 +267,29 @@ app.post('/api/app/tts', rateLimit({ max: 30, name: 'tts' }), gate, needKey, asy
   }
 });
 
+// Public key generator website: one free 12h key per device.
+// The key is pre-activated with a 12h expiry at mint time (verify() only
+// activates keys whose expiresAt is unset, and it clamps days to >= 1,
+// so a 12h key must carry its own expiresAt).
+app.post('/api/web/mint', rateLimit({ max: 5, name: 'webmint' }), gate, (req, res) => {
+  const deviceId = String(req.body?.deviceId || '').trim();
+  if (!deviceId || deviceId.length > 128) {
+    return res.status(400).json({ ok: false, status: 'BAD_REQUEST', message: 'Device তথ্য দিন।' });
+  }
+  const t = now();
+  const existing = db.keys.find(item => item.label === 'WEB' && item.deviceId === deviceId && !item.banned && (!item.expiresAt || item.expiresAt > t));
+  if (existing) {
+    return res.json({ ok: true, key: existing.key, expiresAt: existing.expiresAt, label: existing.label || 'WEB', reused: true });
+  }
+  let keyText;
+  do { keyText = `K-${randomHex()}-${randomHex()}`; } while (db.keys.some(item => item.key === keyText));
+  const item = { key: keyText, label: 'WEB', days: 1, createdAt: t, activatedAt: t, expiresAt: t + 12 * 60 * 60 * 1000, deviceId, banned: false, loginCount: 0, ttsCount: 0 };
+  db.keys.push(item);
+  addLog('web_key', keyText, deviceId.slice(0, 40));
+  save();
+  res.json({ ok: true, key: keyText, expiresAt: item.expiresAt, label: 'WEB', reused: false });
+});
+
 // Admin authentication (HTTP Basic; deploy behind HTTPS only)
 const adminLimiter = rateLimit({ max: 30, windowMs: 60000, name: 'admin' });
 function admin(req, res, next) {
